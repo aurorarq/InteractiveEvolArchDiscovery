@@ -1,0 +1,134 @@
+<experiment>
+	<process algorithm-type="net.sf.jclec.sbse.discovery.imo.InteractiveMOEPAlgorithm">
+		
+		<mo-strategy type="net.sf.jclec.sbse.discovery.imo.InteractiveMOTDStrategy">
+			<fitness type="net.sf.jclec.sbse.discovery.imo.InteractiveMOFitness" />	
+			<!-- interaction (default values) -->
+			<initial-t>0.1</initial-t>
+			<final-t>0.005</final-t>
+			<lambda>0.5</lambda>
+			<weight-preferences>0.5</weight-preferences>
+			<weight-dominance>0.5</weight-dominance>
+			<preference-priority>false</preference-priority>
+			<use-confidence>false</use-confidence>
+		</mo-strategy>
+
+		<species type="net.sf.jclec.sbse.discovery.imo.InteractiveMOSpecies"/>
+		<provider type="net.sf.jclec.sbse.discovery.TreeCreator"/>
+		<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="456789123"/>
+		<population-size>100</population-size>
+		<max-of-generations>200</max-of-generations>
+		
+		<!-- Interaction parameters -->
+		<interaction>
+			<number-interactions>1</number-interactions>
+			<number-solutions>3</number-solutions>
+			<interactive-selector type="net.sf.jclec.sbse.discovery.imo.selectors.ClusteringSelector" />
+			<user-id>1</user-id>
+			<max-eval-time>300</max-eval-time>
+			<use-time-counter>true</use-time-counter>
+		</interaction>
+		
+		<!-- Problem instance -->		
+		<min-of-components>2</min-of-components>
+		<max-of-components>6</max-of-components>
+		
+		<model>
+			<path>data/datapro4j.xmi</path>
+		</model>
+		
+		<!-- Evaluator -->
+		<evaluator type="net.sf.jclec.sbse.discovery.imo.InteractiveMOEvaluator">
+			<objectives>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ICD" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ERP"  maximize="false" min="0" max="1">
+					<assoc-weight>1.0</assoc-weight>
+					<aggreg-weight>2.0</aggreg-weight>
+					<compos-weight>3.0</compos-weight>
+					<gener-weight>5.0</gener-weight>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.GCR" maximize="false" min="0" max="1"/>
+				<!--
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CS" maximize="false" min="0" max="1">
+					<size-threshold>0.3</size-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ABS" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CL" maximize="false" min="0" max="1">
+					<link-threshold>8</link-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ENC" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.INS" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CB" maximize="false" min="0" max="1" />
+				-->
+			</objectives>
+		</evaluator>
+		
+		<!-- Mutator -->
+		<mutator type="net.sf.jclec.sbse.discovery.imo.InteractiveMOMutator" probability-invalids="true">
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.AddComponentMutator" weight="0.2" random="false"/>
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.RemoveComponentMutator" weight="0.1" random="false" />
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.MergeComponentsMutator" weight="0.1" random="false"/>
+		 	<mutator type="net.sf.jclec.sbse.discovery.imo.mut.AddInterfaceMutator" weight="0.3" random="false"/>
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.MoveClassMutator" weight="0.3" random="true"/>
+		</mutator>
+		
+		<!-- Listeners -->
+		<!-- PF y PS -->
+		<listener type="net.sf.jclec.sbse.discovery.imo.listeners.InteractionArchiveReporter">
+			<report-frequency>20000</report-frequency>
+			<report-title>prueba</report-title>
+			<filter-from-archive>true</filter-from-archive>
+			<command-extract type="net.sf.jclec.mo.command.NonDominatedFeasibleSolutionsExtractor">
+				<comparator type="net.sf.jclec.mo.comparator.fcomparator.ParetoComparator" />
+			</command-extract>
+		</listener>
+		
+		<listener type="net.sf.jclec.mo.listener.MOParetoSetReporter">
+			<report-frequency>20000</report-frequency>
+			<report-on-console>false</report-on-console>
+			<report-on-file>true</report-on-file>
+			<report-title>prueba</report-title>
+			<filter-from-archive>true</filter-from-archive>
+			<command-extract type="net.sf.jclec.mo.command.NonDominatedFeasibleSolutionsExtractor">
+				<comparator type="net.sf.jclec.mo.comparator.fcomparator.ParetoComparator" />
+			</command-extract>
+		</listener>
+		
+		<!-- Quality indicators -->
+		<listener type="net.sf.jclec.mo.listener.MOIndicatorReporter">
+			
+			<report-frequency>20000</report-frequency>
+			<report-on-console>false</report-on-console>
+			<report-on-file>true</report-on-file>
+			<report-title>prueba</report-title>
+			<filter-from-archive>true</filter-from-archive>
+			<!-- The list of quality indicators -->
+			<indicators>
+				<indicator type="net.sf.jclec.mo.indicator.Hypervolume"/>
+				<indicator type="net.sf.jclec.mo.indicator.ONVG"/>
+				<indicator type="net.sf.jclec.mo.indicator.Spacing"/>
+			</indicators>
+			<!-- Commands that will be used to perform objective transformations -->
+			<command-invert type="net.sf.jclec.mo.command.ObjectiveInverter" />
+			<command-extract type="net.sf.jclec.mo.command.NonDominatedFeasibleSolutionsExtractor">
+				<comparator type="net.sf.jclec.mo.comparator.fcomparator.ParetoComparator" />
+			</command-extract>
+		</listener>
+		
+		<!-- Interaction -->
+		<listener type="net.sf.jclec.sbse.discovery.imo.listeners.InteractionReporter">
+			<report-frequency>600</report-frequency>
+			<report-on-file>true</report-on-file>
+			<report-on-console>false</report-on-console>
+			<report-title>prueba</report-title>
+		</listener>
+		<listener type="net.sf.jclec.sbse.discovery.imo.listeners.InteractionFileReporter">
+			<report-frequency>600</report-frequency>
+			<report-title>prueba</report-title>
+		</listener>
+		<listener type="net.sf.jclec.sbse.discovery.imo.listeners.MeasureEvolutionReporter">
+			<report-frequency>600</report-frequency>
+			<report-title>prueba</report-title>
+		</listener>
+	</process>
+</experiment>

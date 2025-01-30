@@ -1,0 +1,87 @@
+<experiment>
+	<process algorithm-type="net.sf.jclec.sbse.discovery.imo.IMOAlgorithm">
+		
+		<mo-strategy type="net.sf.jclec.sbse.discovery.imo.IMOStrategy">
+			<archive-size>2</archive-size>
+			<k-value>2</k-value>
+		</mo-strategy>
+
+		<species type="net.sf.jclec.sbse.discovery.imo.IMOSpecies"/>
+		<provider type="net.sf.jclec.sbse.discovery.imo.IMOTreeCreator"/>
+		
+		<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="123456789"/>
+		
+		<population-size>10</population-size>
+		<max-of-generations>4</max-of-generations>
+		
+		<!-- Interaction parameters -->
+		<interaction>
+			<interaction-frequency>15</interaction-frequency>
+			<interactive-selector type="net.sf.jclec.sbse.discovery.imo.selectors.PartialRandomSelector" />
+			<number-to-select>2</number-to-select>
+		</interaction>
+		
+		<!-- Problem instance -->		
+		<min-of-components>3</min-of-components>
+		<max-of-components>5</max-of-components>
+		
+		<model>
+			<path>data/ejemploMetodos.xmi</path>
+		</model>
+		
+		<!-- Evaluator -->
+		<evaluator type="net.sf.jclec.sbse.discovery.imo.IMOEvaluator">
+			<objectives>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ICD" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ERP"  maximize="false" min="0" max="1">
+					<assoc-weight>1.0</assoc-weight>
+					<aggreg-weight>2.0</aggreg-weight>
+					<compos-weight>3.0</compos-weight>
+					<gener-weight>5.0</gener-weight>
+				</objective>
+				<!--
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.GCR" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ENC" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.INS" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ABS" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CL" maximize="false" min="0" max="1">
+					<link-threshold>8</link-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CS" maximize="false" min="0" max="1">
+					<size-threshold>0.3</size-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ComponentBalance" maximize="false" min="0" max="1" />
+				-->
+			</objectives>
+		</evaluator>
+		
+		<!-- Mutator -->
+		<mutator type="net.sf.jclec.sbse.discovery.imo.IMOMutator" probability-invalids="true" max-of-attempts="1">
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.AddComponentMutator" weight="0.2" random="false"/>
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.RemoveComponentMutator" weight="0.2" random="false" />
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.MergeComponentsMutator" weight="0.2" random="false"/>
+		 	<mutator type="net.sf.jclec.sbse.discovery.imo.mut.AddInterfaceMutator" weight="0.2" random="false"/>
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.MoveClassMutator" weight="0.2" random="true"/>
+		</mutator>
+		
+		<!-- Listeners -->
+		<listener type="net.sf.jclec.mo.listener.MOParetoFrontReporter">
+			<report-frequency>10</report-frequency>
+			<report-title>prueba-imo</report-title>
+		</listener>
+		<listener type="net.sf.jclec.mo.listener.MOParetoSetReporter">
+			<report-frequency>10</report-frequency>
+			<report-title>prueba-imo</report-title>
+		</listener>
+		<listener type="net.sf.jclec.sbse.discovery.imo.listeners.InteractionReporter">
+			<report-frequency>1</report-frequency>
+			<report-on-file>true</report-on-file>
+			<report-on-console>true</report-on-console>
+			<report-title>prueba-imo</report-title>
+		</listener>
+		<listener type="net.sf.jclec.sbse.discovery.imo.listeners.InteractionFileReporter">
+			<report-frequency>1</report-frequency>
+			<report-title>prueba-imo</report-title>
+		</listener>
+	</process>
+</experiment>

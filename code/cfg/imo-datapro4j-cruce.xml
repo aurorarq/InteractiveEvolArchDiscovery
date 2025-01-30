@@ -1,0 +1,101 @@
+<experiment>
+	<process algorithm-type="net.sf.jclec.sbse.discovery.imo.IMOAlgorithm2">
+		
+		<mo-strategy type="net.sf.jclec.sbse.discovery.imo.IMOStrategy">
+			<archive-size>10</archive-size>
+		</mo-strategy>
+
+		<species type="net.sf.jclec.sbse.discovery.imo.IMOSpecies"/>
+		<provider type="net.sf.jclec.sbse.discovery.TreeCreator"/>
+		
+		<rand-gen-factory multi="true">
+			<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="123456789"/>
+			<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="234567891"/>
+		<!--	<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="345678912"/>
+			<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="456789123"/>
+			<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="567891234"/>-->
+		</rand-gen-factory>
+		
+		<population-size>100</population-size>
+		<max-of-generations>5000</max-of-generations>
+		
+		<!-- Interaction parameters -->
+		<interaction>
+			<interaction-frequency>1200</interaction-frequency>
+			<interactive-selector type="net.sf.jclec.sbse.discovery.imo.selectors.ClusteringSelector" />
+			<number-to-select>3</number-to-select>
+		</interaction>
+		
+		<!-- Problem instance -->		
+		<min-of-components>2</min-of-components>
+		<max-of-components>6</max-of-components>
+		
+		<model>
+			<path>data/datapro4j.xmi</path>
+		</model>
+		
+		<!-- Evaluator -->
+		<evaluator type="net.sf.jclec.sbse.discovery.imo.IMOEvaluator">
+			<objectives>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ICD" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ERP"  maximize="false" min="0" max="1">
+					<assoc-weight>1.0</assoc-weight>
+					<aggreg-weight>2.0</aggreg-weight>
+					<compos-weight>3.0</compos-weight>
+					<gener-weight>5.0</gener-weight>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.GCR" maximize="false" min="0" max="1"/>
+				
+				<!--
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CS" maximize="false" min="0" max="1">
+					<size-threshold>0.3</size-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ABS" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CL" maximize="false" min="0" max="1">
+					<link-threshold>8</link-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CS" maximize="false" min="0" max="1">
+					<size-threshold>0.3</size-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.ENC" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.INS" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.imo.objectives.CB" maximize="false" min="0" max="1" />
+				-->
+				
+			</objectives>
+		</evaluator>
+		
+		<!-- Recombinator -->
+		<!--<recombinator type="net.sf.jclec.sbse.discovery.imo.rec.OnePointCrossover" rec-prob="0.9" />-->
+		<recombinator type="net.sf.jclec.sbse.discovery.imo.rec.OneComponentCrossover" rec-prob="0.9" />
+				
+		<!-- Mutator -->
+		<mutator type="net.sf.jclec.sbse.discovery.imo.IMOMutator" probability-invalids="true" mut-prob="1.0">
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.AddComponentMutator" weight="0.2" random="false"/>
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.RemoveComponentMutator" weight="0.1" random="false" />
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.MergeComponentsMutator" weight="0.1" random="false"/>
+		 	<mutator type="net.sf.jclec.sbse.discovery.imo.mut.AddInterfaceMutator" weight="0.3" random="false"/>
+			<mutator type="net.sf.jclec.sbse.discovery.imo.mut.MoveClassMutator" weight="0.3" random="true"/>
+		</mutator>
+		
+		<!-- Listeners -->
+		<listener type="net.sf.jclec.mo.listener.MOParetoFrontReporter">
+			<report-frequency>2500</report-frequency>
+			<report-title>prueba4-datapro4j-imo-cruce</report-title>
+		</listener>
+		<listener type="net.sf.jclec.mo.listener.MOParetoSetReporter">
+			<report-frequency>2500</report-frequency>
+			<report-title>prueba4-datapro4j-imo-cruce</report-title>
+		</listener>
+		<listener type="net.sf.jclec.sbse.discovery.imo.listeners.InteractionReporter">
+			<report-frequency>500</report-frequency>
+			<report-on-file>true</report-on-file>
+			<report-on-console>false</report-on-console>
+			<report-title>prueba4-datapro4j-imo-cruce</report-title>
+		</listener>
+		<listener type="net.sf.jclec.sbse.discovery.imo.listeners.InteractionFileReporter">
+			<report-frequency>250</report-frequency>
+			<report-title>prueba4-datapro4j-imo-cruce</report-title>
+		</listener>
+	</process>
+</experiment>

@@ -1,0 +1,111 @@
+<experiment>
+	<process algorithm-type="net.sf.jclec.sbse.discovery.mo.MoAlgorithm">
+		
+		<mo-strategy type="net.sf.jclec.mo.strategy.constrained.ConstrainedNSGA2">
+			<fitness type="net.sf.jclec.mo.evaluation.fitness.NSGA2MOFitness"/>
+		</mo-strategy>
+
+		<species type="net.sf.jclec.sbse.discovery.mo.MoSpecies"/>
+		<provider type="net.sf.jclec.sbse.discovery.TreeCreator"/>
+		
+		<!--<rand-gen-factory multi="true">-->
+		<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="123456789"/>
+		<!--<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="234567891"/>
+		<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="345678912"/>
+		<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="456789123"/>
+		<rand-gen-factory type="net.sf.jclec.util.random.RanecuFactory" seed="567891234"/>
+		</rand-gen-factory>-->
+		
+		<population-size>150</population-size>
+		<max-of-evaluations>24000</max-of-evaluations>
+		
+		<!-- Problem instance -->		
+		<min-of-components>2</min-of-components>
+		<max-of-components>6</max-of-components>
+		
+		<model>
+			<path>data/logisim.xmi</path>
+		</model>
+		
+		<!-- Evaluator -->
+		<evaluator type="net.sf.jclec.sbse.discovery.mo.MoEvaluator">
+			<objectives>
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.ICD" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.ERP"  maximize="false" min="0" max="1">
+					<assoc-weight>1.0</assoc-weight>
+					<aggreg-weight>2.0</aggreg-weight>
+					<compos-weight>3.0</compos-weight>
+					<gener-weight>5.0</gener-weight>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.GCR" maximize="false" min="0" max="1"/>
+				<!--<objective type="net.sf.jclec.sbse.discovery.mo.objectives.CS" maximize="false" min="0" max="1">
+					<size-threshold>0.3</size-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.ABS" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.CL" maximize="false" min="0" max="1">
+					<link-threshold>8</link-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.CS" maximize="false" min="0" max="1">
+					<size-threshold>0.3</size-threshold>
+				</objective>
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.ENC" maximize="false" min="0" max="1"/>
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.INS" maximize="false" min="0" max="1"/>
+				
+				<objective type="net.sf.jclec.sbse.discovery.mo.objectives.CB" maximize="false" min="0" max="1" />
+				-->
+			</objectives>
+		</evaluator>
+		
+		<!-- Mutator -->
+		<base-mutator type="net.sf.jclec.sbse.discovery.Mutator" probability-invalids="true">
+			<mutator type="net.sf.jclec.sbse.discovery.mut.AddComponentMutator" weight="0.2" random="false"/>
+			<mutator type="net.sf.jclec.sbse.discovery.mut.RemoveComponentMutator" weight="0.1" random="false" />
+			<mutator type="net.sf.jclec.sbse.discovery.mut.MergeComponentsMutator" weight="0.1" random="false"/>
+		 	<mutator type="net.sf.jclec.sbse.discovery.mut.AddInterfaceMutator" weight="0.3" random="false"/>
+			<mutator type="net.sf.jclec.sbse.discovery.mut.MoveClassMutator" weight="0.3" random="true"/>
+		</base-mutator>
+		
+		<!-- Listeners -->
+		<!-- PF y PS -->
+		<listener type="net.sf.jclec.mo.listener.MOParetoFrontReporter">
+			<report-frequency>50</report-frequency>
+			<report-title>prueba-nsga2-logisim</report-title>
+			<filter-from-archive>true</filter-from-archive>
+			<command-extract type="net.sf.jclec.mo.command.NonDominatedFeasibleSolutionsExtractor">
+				<comparator type="net.sf.jclec.mo.comparator.fcomparator.ParetoComparator" />
+			</command-extract>
+		</listener>
+		
+		<listener type="net.sf.jclec.mo.listener.MOParetoSetReporter">
+			<report-frequency>50</report-frequency>
+			<report-on-console>false</report-on-console>
+			<report-on-file>true</report-on-file>
+			<report-title>prueba-nsga2-logisim</report-title>
+			<filter-from-archive>true</filter-from-archive>
+			<command-extract type="net.sf.jclec.mo.command.NonDominatedFeasibleSolutionsExtractor">
+				<comparator type="net.sf.jclec.mo.comparator.fcomparator.ParetoComparator" />
+			</command-extract>
+		</listener>
+		
+		<!-- INDICATORS -->
+		<listener type="net.sf.jclec.mo.listener.MOIndicatorReporter">
+			
+			<report-frequency>50</report-frequency>
+			<report-on-console>false</report-on-console>
+			<report-on-file>true</report-on-file>
+			<report-title>prueba-nsga2-logisim</report-title>
+			<filter-from-archive>true</filter-from-archive>
+			<!-- The list of quality indicators -->
+			<indicators>
+				<indicator type="net.sf.jclec.mo.indicator.Hypervolume"/>
+				<indicator type="net.sf.jclec.mo.indicator.ONVG"/>
+				<indicator type="net.sf.jclec.mo.indicator.Spacing"/>
+			</indicators>
+			<!-- Commands that will be used to perform objective transformations -->
+			<command-invert type="net.sf.jclec.mo.command.ObjectiveInverter" />
+			<command-extract type="net.sf.jclec.mo.command.NonDominatedFeasibleSolutionsExtractor">
+				<comparator type="net.sf.jclec.mo.comparator.fcomparator.ParetoComparator" />
+			</command-extract>
+		</listener>		
+	</process>
+</experiment>
